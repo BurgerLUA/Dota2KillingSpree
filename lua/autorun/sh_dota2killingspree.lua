@@ -29,6 +29,7 @@ if SERVER then
 			end
 			
 			victim.KN_Spree = 0
+			victim.KN_Multikill = 0
 			
 		end
 
@@ -39,10 +40,12 @@ if SERVER then
 	function KN_Think()
 
 		for k,v in pairs(player.GetAll()) do
-			if v.KN_ResetKill ~= 0 then 
-				if v.KN_ResetKill <= CurTime() then
-					v.KN_Multikill = 0
-					v.KN_ResetKill = 0
+			if KN_ResetKill then
+				if v.KN_ResetKill ~= 0 then 
+					if v.KN_ResetKill <= CurTime() then
+						v.KN_Multikill = 0
+						v.KN_ResetKill = 0
+					end
 				end
 			end
 		end
@@ -106,21 +109,94 @@ if CLIENT then
 			SpreeCorrection = " is on a "
 		end
 		
-		
 		if WriteSpree and WriteMultikill then
-			chat.AddText(team.GetColor(Attacker:Team()),Attacker:Nick(),White,SpreeCorrection,Color(200,0,200,255),KN_TranslateKillingSpree(SpreeNum),White," with a ",Color(200,0,200,255),KN_TranslateMultiKill(KillNum))
-		elseif WriteSpree then
-			chat.AddText(team.GetColor(Attacker:Team()),Attacker:Nick(),White,SpreeCorrection,Color(200,0,200,255),KN_TranslateKillingSpree(SpreeNum))
-		elseif WriteMultikill then
-			chat.AddText(team.GetColor(Attacker:Team()),Attacker:Nick(),White," got a ",Color(200,0,200,255),KN_TranslateMultiKill(KillNum))
-		end
+			chat.AddText(team.GetColor(Attacker:Team()),Attacker:Nick(),White,SpreeCorrection,KN_TranslateKillingSpreeColor(SpreeNum),KN_TranslateKillingSpreeText(SpreeNum),White," with a ",KN_TranslateMultiKillColor(KillNum),KN_TranslateMultiKillText(KillNum))
 		
+			KN_EmitSound( KN_TranslateKillingSpreeSound(SpreeNum) )
+			
+			timer.Simple(1.5,function()
+		
+				KN_EmitSound( KN_TranslateMultiKillSound(KillNum) )
+		
+			end)
+			
+		elseif WriteSpree then
+			chat.AddText(team.GetColor(Attacker:Team()),Attacker:Nick(),White,SpreeCorrection,KN_TranslateKillingSpreeColor(SpreeNum),KN_TranslateKillingSpreeText(SpreeNum))
+			KN_EmitSound( KN_TranslateKillingSpreeSound(SpreeNum) )
+		elseif WriteMultikill then
+			chat.AddText(team.GetColor(Attacker:Team()),Attacker:Nick(),White," got a ",KN_TranslateMultiKillColor(KillNum),KN_TranslateMultiKillText(KillNum))
+			KN_EmitSound( KN_TranslateMultiKillSound(KillNum) )
+		end
 		
 	
 	
 	end)
+	
+	function KN_EmitSound(sound)
+	
+		EmitSound( sound, LocalPlayer():GetPos(), LocalPlayer():EntIndex(), CHAN_VOICE2, 1, 75, SND_DO_NOT_OVERWRITE_EXISTING_ON_CHANNEL, 100 )
+	
+	end
+	
+	function KN_TranslateKillingSpreeSound(num)
+	
+		local SpreeTable = {}
+		SpreeTable[3] = "dota/Announcer_kill_spree_01.mp3"
+		SpreeTable[4] = "dota/Announcer_kill_dominate_01.mp3"
+		SpreeTable[5] = "dota/Announcer_kill_mega_01.mp3"
+		SpreeTable[6] = "dota/Announcer_kill_unstop_01.mp3"
+		SpreeTable[7] = "dota/Announcer_kill_wicked_01.mp3"
+		SpreeTable[8] = "dota/Announcer_kill_monster_01.mp3"
+		SpreeTable[9] = "dota/Announcer_kill_godlike_01.mp3"
+		SpreeTable[10] = "dota/Announcer_kill_holy_01.mp3"
+		
+		return SpreeTable[math.Clamp(num,3,10)]
+	
+	end
+	
+	function KN_TranslateMultiKillSound(num)
+	
+		local KillTable = {}
+		KillTable[2] = "dota/Announcer_kill_double_01.mp3"
+		KillTable[3] = "dota/Announcer_kill_triple_01.mp3"
+		KillTable[4] = "dota/Announcer_kill_ultra_01.mp3"
+		KillTable[5] = "dota/Announcer_kill_rampage_01.mp3"
+		
+		return KillTable[math.Clamp(num,2,5)]
 
-	function KN_TranslateKillingSpree(num)
+	end
+	
+	function KN_TranslateKillingSpreeColor(num)
+	
+		local SpreeTable = {}
+		SpreeTable[3] = Color(0,255,255,255)
+		SpreeTable[4] = Color(200,0,200,255)
+		SpreeTable[5] = Color(100,0,100,255)
+		SpreeTable[6] = Color(0,255,0,255)
+		SpreeTable[7] = Color(255,255,0,255)
+		SpreeTable[8] = Color(255,100,0,255)
+		SpreeTable[9] = Color(255,0,0,255)
+		SpreeTable[10] = Color(255,0,0,255)
+		
+		return SpreeTable[math.Clamp(num,3,10)]
+
+	end
+	
+	function KN_TranslateMultiKillColor(num)
+	
+		local KillTable = {}
+		KillTable[2] = Color(255,255,0,255)
+		KillTable[3] = Color(255,200,0,255)
+		KillTable[4] = Color(255,100,0,255)
+		KillTable[5] = Color(255,0,0,255)
+		
+		return KillTable[math.Clamp(num,2,5)]
+
+	end
+
+	
+
+	function KN_TranslateKillingSpreeText(num)
 	
 		local SpreeTable = {}
 		SpreeTable[3] = "Killing Spree"
@@ -136,7 +212,7 @@ if CLIENT then
 
 	end
 	
-	function KN_TranslateMultiKill(num)
+	function KN_TranslateMultiKillText(num)
 	
 		local KillTable = {}
 		KillTable[2] = "Double Kill!"
