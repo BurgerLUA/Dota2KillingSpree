@@ -40,7 +40,7 @@ if SERVER then
 	function KN_Think()
 
 		for k,v in pairs(player.GetAll()) do
-			if KN_ResetKill then
+			if v.KN_ResetKill then
 				if v.KN_ResetKill ~= 0 then 
 					if v.KN_ResetKill <= CurTime() then
 						v.KN_Multikill = 0
