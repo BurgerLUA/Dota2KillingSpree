@@ -22,7 +22,7 @@ if SERVER then
 
 				attacker.KN_Spree = attacker.KN_Spree + 1
 				attacker.KN_Multikill = attacker.KN_Multikill + 1
-				attacker.KN_ResetKill = CurTime() + 10
+				attacker.KN_ResetKill = CurTime() + 17
 				
 				KN_SendData(attacker,victim)
 				
