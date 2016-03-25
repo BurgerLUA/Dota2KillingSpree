@@ -115,9 +115,11 @@ if CLIENT then
 			KN_EmitSound( KN_TranslateKillingSpreeSound(SpreeNum) )
 			
 			timer.Simple(1.5,function()
-		
 				KN_EmitSound( KN_TranslateMultiKillSound(KillNum) )
-		
+			end)
+			
+			timer.Simple(3,function()
+				KN_EmitSound( "bill/wow"..math.random(1,12)..".wav" )
 			end)
 			
 		elseif WriteSpree then
