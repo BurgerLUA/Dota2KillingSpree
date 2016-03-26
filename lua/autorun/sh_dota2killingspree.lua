@@ -136,7 +136,7 @@ if CLIENT then
 	
 	function KN_EmitSound(sound)
 	
-		EmitSound( sound, LocalPlayer():GetPos(), LocalPlayer():EntIndex(), CHAN_VOICE2, 1, 75, SND_DO_NOT_OVERWRITE_EXISTING_ON_CHANNEL, 100 )
+		EmitSound( sound, LocalPlayer():GetPos(), LocalPlayer():EntIndex(), CHAN_VOICE2, 1, SNDLVL_180dB, SND_CHANGE_VOL, 100 )
 	
 	end
 	
