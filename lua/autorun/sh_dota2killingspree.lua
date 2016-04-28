@@ -36,6 +36,14 @@ if SERVER then
 	end
 
 	hook.Add("PlayerDeath","KN_PlayerDeath",KN_PlayerDeath)
+	
+	function KN_PlayerSpawn(ply)
+		ply.KN_Spree = 0
+		ply.KN_Multikill = 0
+	end
+	
+	hook.Add("PlayerSpawn","KN_PlayerSpawn",KN_PlayerSpawn)
+	
 
 	function KN_Think()
 
